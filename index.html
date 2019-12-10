@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Hello World</title>
+  <title>Advance Digital Coding Test</title>
 
   <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
@@ -16,56 +16,66 @@
   <script>
     window.googletag = window.googletag || { cmd: [] };
   </script>
-  <script>
-    googletag.cmd.push(function () {
-      //ad unit path comes from the requirement
-      googletag.defineSlot("344101295/SI/www.silive.com/news/index.ssf", [728, 90], "div-gpt-ad-123456789-0")
-        .addService(googletag.pubads())
-        //slot level targeting applies to slot A
-        .setTargeting("interests", ["sports", "music", "movies"]);
-      //ad unit path comes from the requirement
-      googletag.defineSlot("344101295/SI/www.silive.com/news/index.ssf", [300, 250], "div-gpt-ad-123456789-1")
-        .addService(googletag.pubads())
-        //slot level targeting applies to slot B
-        .setTargeting("gender", "female")
-        .setTargeting("age", "20-30");
 
-      //page level targeting applies to both slots
-      googletag.pubads().setTargeting("topic", "basketball");
-
-      googletag.pubads().enableSingleRequest();
-      googletag.enableServices();
-    });
-  </script>
 </head>
 
 <body>
   <div id="root"></div>
-  <div id="div-gpt-ad-123456789-0" style="width: 728px; height: 90px">
-    <script>
-      googletag.cmd.push(function () {
-        googletag.display("div-gpt-ad-123456789-0");
-      });
-    </script>
-  </div>
-  <div id="div-gpt-ad-123456789-1">
-    <script>
-      googletag.cmd.push(function () {
-        googletag.display("div-gpt-ad-123456789-1");
-      });
-    </script>
-  </div>
+
   <script type="text/babel">
 
     class App extends React.Component {
       constructor(props) {
         super(props);
+        this.state = {
+          adUnitPath: '344101295/SI/www.silive.com/news/index.ssf',
+          pageTargeting: {},
+          slotTargeting: {},
+        }
+      }
+
+      componentDidMount() {
+        this.initAds(this.state.adUnitPath);
+        this.pushAds();
+      }
+
+      initAds(adUnitPath, pageTargeting) {
+        googletag.cmd.push(function () {
+          //Slot A: ad unit path comes from the requirement
+          googletag.defineSlot(adUnitPath, [728, 90], "div-gpt-ad-123456789-0")
+            .addService(googletag.pubads())
+            //slot level targeting applies to slot A
+            .setTargeting("interests", ["sports", "music", "movies"]);
+
+          //Slot B: ad unit path comes from the requirement
+          googletag.defineSlot("344101295/SI/www.silive.com/news/index.ssf", [300, 250], "div-gpt-ad-123456789-1")
+            .addService(googletag.pubads())
+            //slot level targeting applies to slot B
+            .setTargeting("gender", "female")
+            .setTargeting("age", "20-30");
+
+          //page level targeting applies to both slots
+          googletag.pubads().setTargeting("topic", "basketball");
+
+          googletag.pubads().enableSingleRequest();
+          googletag.enableServices();
+        });
+      }
+
+      pushAds() {
+        googletag.cmd.push(function () {
+          googletag.display("div-gpt-ad-123456789-0");
+        });
+        googletag.cmd.push(function () {
+          googletag.display("div-gpt-ad-123456789-1");
+        })
       }
 
       render() {
         return (
-          <div >
-            hello
+          <div>
+            <div id="div-gpt-ad-123456789-0"></div>
+            <div id="div-gpt-ad-123456789-1"></div>
           </div>
         )
       }
