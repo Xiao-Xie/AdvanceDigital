@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Advance Digital Coding Test</title>
+
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script async type="text/javascript" src="//tags.crwdcntrl.net/c/931/cc.js?ns=_cc931" id="LOTCC_931"></script>
+
+  <!-- loads GPT library -->
+  <script async="async" src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+  <script>
+    window.googletag = window.googletag || { cmd: [] };
+  </script>
+
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+
+    class App extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          adUnitPath: '344101295/SI/www.silive.com/news/index.ssf',
+          pageTargeting: {},
+          slotTargeting: {},
+        }
+      }
+
+      componentDidMount() {
+        this.initAds(this.state.adUnitPath);
+        this.pushAds();
+      }
+
+      initAds(adUnitPath, pageTargeting) {
+        googletag.cmd.push(function () {
+          //Slot A: ad unit path comes from the requirement
+          googletag.defineSlot(adUnitPath, [728, 90], "div-gpt-ad-123456789-0")
+            .addService(googletag.pubads())
+            //slot level targeting applies to slot A
+            .setTargeting("interests", ["sports", "music", "movies"]);
+
+          //Slot B: ad unit path comes from the requirement
+          googletag.defineSlot("344101295/SI/www.silive.com/news/index.ssf", [300, 250], "div-gpt-ad-123456789-1")
+            .addService(googletag.pubads())
+            //slot level targeting applies to slot B
+            .setTargeting("gender", "female")
+            .setTargeting("age", "20-30");
+
+          //page level targeting applies to both slots
+          googletag.pubads().setTargeting("topic", "basketball");
+
+          googletag.pubads().enableSingleRequest();
+          googletag.enableServices();
+        });
+      }
+
+      pushAds() {
+        googletag.cmd.push(function () {
+          googletag.display("div-gpt-ad-123456789-0");
+        });
+        googletag.cmd.push(function () {
+          googletag.display("div-gpt-ad-123456789-1");
+        })
+      }
+
+      render() {
+        return (
+          <div>
+            <div id="div-gpt-ad-123456789-0"></div>
+            <div id="div-gpt-ad-123456789-1"></div>
+          </div>
+        )
+      }
+
+    }
+    ReactDOM.render(
+      <App />,
+      document.getElementById('root')
+    );
+
+  </script>
+
+  <style>
+  </style>
+</body>
+
+</html>

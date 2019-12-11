@@ -8,74 +8,108 @@
   <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-  <script async type="text/javascript" src="//tags.crwdcntrl.net/c/931/cc.js?ns=_cc931" id="LOTCC_931"></script>
-
-  <!-- loads GPT library -->
-  <script async="async" src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-  <script>
-    window.googletag = window.googletag || { cmd: [] };
-  </script>
 
 </head>
 
 <body>
   <div id="root"></div>
 
+  <script>
+
+
+  </script>
   <script type="text/babel">
+    const urlStarWars = 'https://swapi.co/api/people/';
+    const urlPokemon = 'https://pokeapi.co/api/v2/pokemon/';
+
+    const Pokemon = ({ pokemon }) => {
+      if (pokemon) {
+        console.log(pokemon)
+      }
+      return (
+        <div id={pokemon.name}>
+          {pokemon.name}</div>
+      )
+    }
+
+    const StarWars = ({ charactor, homeworld }) => {
+      if (charactor) {
+        console.log(charactor);
+      }
+      if (homeworld) {
+        console.log(homeworld);
+      }
+      return (
+        <div>
+          <div id={charactor.name}>
+            {charactor.name}
+          </div>
+          <div id={charactor.eye_color}>
+            {charactor.eye_color}
+          </div>
+          <div id={charactor.gender}>
+            {charactor.gender}
+          </div>
+          <div id={charactor.hair_color}>
+            {charactor.hair_color}
+          </div>
+          <div id={charactor.mass}>
+            {charactor.mass}
+          </div>
+          <div id={charactor.skin_color}>
+            {charactor.skin_color}
+          </div>
+          <div id={charactor.height}>
+            {charactor.height}
+          </div>
+        </div>
+      )
+    }
 
     class App extends React.Component {
       constructor(props) {
         super(props);
         this.state = {
-          adUnitPath: '344101295/SI/www.silive.com/news/index.ssf',
-          pageTargeting: {},
-          slotTargeting: {},
+          pokemon: {},
+          starWars: {},
+          homeworld: {}
         }
       }
 
       componentDidMount() {
-        this.initAds(this.state.adUnitPath);
-        this.pushAds();
+        this.getPokemon();
+        this.getCharactor();
       }
 
-      initAds(adUnitPath, pageTargeting) {
-        googletag.cmd.push(function () {
-          //Slot A: ad unit path comes from the requirement
-          googletag.defineSlot(adUnitPath, [728, 90], "div-gpt-ad-123456789-0")
-            .addService(googletag.pubads())
-            //slot level targeting applies to slot A
-            .setTargeting("interests", ["sports", "music", "movies"]);
-
-          //Slot B: ad unit path comes from the requirement
-          googletag.defineSlot("344101295/SI/www.silive.com/news/index.ssf", [300, 250], "div-gpt-ad-123456789-1")
-            .addService(googletag.pubads())
-            //slot level targeting applies to slot B
-            .setTargeting("gender", "female")
-            .setTargeting("age", "20-30");
-
-          //page level targeting applies to both slots
-          googletag.pubads().setTargeting("topic", "basketball");
-
-          googletag.pubads().enableSingleRequest();
-          googletag.enableServices();
-        });
-      }
-
-      pushAds() {
-        googletag.cmd.push(function () {
-          googletag.display("div-gpt-ad-123456789-0");
-        });
-        googletag.cmd.push(function () {
-          googletag.display("div-gpt-ad-123456789-1");
+      getPokemon() {
+        axios.get(`${urlPokemon}1`).then(response => {
+          this.setState({ pokemon: response.data });
         })
-      }
+          .catch(err => {
+            console.error(err)
+          })
+      };
+
+      getCharactor() {
+        axios.get(`${urlStarWars}1/`).then(response => {
+          this.setState({ starWars: response.data })
+          return axios.get(response.data.homeworld)
+        }).then(response => {
+          this.setState({
+            homeworld: response.data
+          })
+        }).catch(err => {
+          console.error(err)
+        })
+      };
 
       render() {
         return (
-          <div>
-            <div id="div-gpt-ad-123456789-0"></div>
-            <div id="div-gpt-ad-123456789-1"></div>
+          <div id="flex-container">
+            <Pokemon pokemon={this.state.pokemon} />
+            <StarWars charactor={this.state.starWars} homeworld={this.state.homeworld} />
           </div>
         )
       }
@@ -89,6 +123,10 @@
   </script>
 
   <style>
+    #flex-container {
+      display: flex;
+      flex-direction: row;
+    }
   </style>
 </body>
 
