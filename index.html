@@ -3,6 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <title>Advance Digital Coding Test</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Geostar+Fill&display=swap"
+      rel="stylesheet"
+    />
 
     <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
@@ -18,66 +22,119 @@
       const urlStarWars = 'https://swapi.co/api/people/';
       const urlPokemon = 'https://pokeapi.co/api/v2/pokemon/';
 
-      const Pokemon = ({ pokemon }) => {
+      const Pokemon = ({ pokemon, reload }) => {
         if (pokemon) {
           console.log(pokemon);
         }
         return (
           <>
-            <div id={pokemon.name}>name: {pokemon.name}</div>
-            <div id={pokemon.height}>height: {pokemon.height}</div>
-            <div className='abilities' id={pokemon.abilities}>
-              abilitites:
-              {console.log(pokemon.abilities)}
-              {pokemon.abilities ? (
-                pokemon.abilities.map(item => {
-                  return (
-                    <div key={item.ability.name} className='ability'>
-                      {item.ability.name}
-                    </div>
-                  );
-                })
-              ) : (
-                <></>
-              )}
+            <div className='name_container'>
+              <button
+                className='reload'
+                onClick={e => {
+                  reload();
+                }}>
+                <span>&#x21bb;</span>
+                Selected Pokemon:{' '}
+              </button>
+              <h2>{pokemon.name}</h2>
             </div>
-            <div id={pokemon.id}>id: {pokemon.id}</div>
-            <div id={pokemon.weight}>weight: {pokemon.weight}</div>
-            <div id={pokemon.sprites}>
-              {pokemon.sprites ? (
-                Object.keys(pokemon.sprites).map(key => {
-                  if (pokemon.sprites[key] && key.indexOf('female') < 0) {
-                    return <img src={pokemon.sprites[key]} />;
-                  }
-                })
-              ) : (
-                <></>
-              )}
+
+            <div className='flex-container'>
+              <div className='image_container'>
+                <div className='sprites_container'>
+                  {pokemon.sprites ? (
+                    Object.keys(pokemon.sprites).map(key => {
+                      if (pokemon.sprites[key] && key.indexOf('female') < 0) {
+                        return (
+                          <div key={key}>
+                            <img src={pokemon.sprites[key]} />
+                          </div>
+                        );
+                      }
+                    })
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              </div>
+
+              <div className='details_container'>
+                <div>
+                  <span>Name:</span> {pokemon.name}
+                </div>
+                <div>
+                  <span>Height:</span> {pokemon.height}
+                </div>
+
+                <div>
+                  <span>ID:</span> {pokemon.id}
+                </div>
+                <div>
+                  <span>Weight:</span> {pokemon.weight}
+                </div>
+                <div className='abilities'>
+                  <span>Abilitites:</span>
+                  <div>
+                    {pokemon.abilities ? (
+                      pokemon.abilities.map(item => {
+                        return (
+                          <div key={item.ability.name} className='ability'>
+                            {item.ability.name}
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </>
         );
       };
 
-      const StarWars = ({ charactor, homeworld }) => {
-        // if (charactor) {
-        //   console.log(charactor);
-        // }
-        // if (homeworld) {
-        //   console.log(homeworld);
-        // }
+      const StarWars = ({ charactor, reload }) => {
         return (
           <div>
-            <div id={charactor.name}>{charactor.name}</div>
-            <div id={charactor.eye_color}>{charactor.eye_color}</div>
-            <div id={charactor.gender}>
-              {charactor.gender}
-              <div className={`${charactor.gender} gender`} />
+            <div className='name_container'>
+              <button
+                className='reload'
+                onClick={e => {
+                  reload();
+                }}>
+                <span>&#x21bb;</span>
+                Selected charactor:
+              </button>
+              <h2>{charactor.name} </h2>
             </div>
-            <div id={charactor.hair_color}>{charactor.hair_color}</div>
-            <div id={charactor.mass}>{charactor.mass}</div>
-            <div id={charactor.skin_color}>{charactor.skin_color}</div>
-            <div id={charactor.height}>{charactor.height}</div>
-            <div id={homeworld.name}>{homeworld.name}</div>
+
+            <div className='flex-container'>
+              <div className='image_container'>
+                <div className={`${charactor.gender} gender`} />
+              </div>
+              <div className='details_container'>
+                <div>
+                  <span>Gender:</span> {charactor.gender}
+                </div>
+                <div>
+                  <span>Eye Color:</span> {charactor.eye_color}
+                </div>
+                <div>
+                  <span>Hair Color:</span> {charactor.hair_color}
+                </div>
+                <div>
+                  <span>Mass:</span> {charactor.mass}
+                </div>
+                <div>
+                  <span>Skin Color:</span> {charactor.skin_color}
+                </div>
+                <div>
+                  <span>Height:</span> {charactor.height}
+                </div>
+              </div>
+            </div>
           </div>
         );
       };
@@ -87,9 +144,10 @@
           super(props);
           this.state = {
             pokemon: {},
-            starWars: {},
-            homeworld: {},
+            charactor: {},
           };
+          this.getCharactor = this.getCharactor.bind(this);
+          this.getPokemon = this.getPokemon.bind(this);
         }
 
         componentDidMount() {
@@ -118,12 +176,7 @@
           axios
             .get(`${urlStarWars}${charactor}/`)
             .then(response => {
-              this.setState({ starWars: response.data });
-              // return axios.get(response.data.homeworld)
-              // }).then(response => {
-              //   this.setState({
-              //     homeworld: response.data
-              //   })
+              this.setState({ charactor: response.data });
             })
             .catch(err => {
               console.error(err);
@@ -135,28 +188,19 @@
             <>
               <h1>Star Wars Charactor and their Pokemon!</h1>
 
-              <div id='flex-container'>
+              <div className='flex-container'>
                 <div id='charactor'>
-                  <button
-                    onClick={e => {
-                      this.getCharactor();
-                    }}>
-                    Select a charactor
-                  </button>
                   <StarWars
-                    charactor={this.state.starWars}
-                    homeworld={this.state.homeworld}
+                    charactor={this.state.charactor}
+                    reload={this.getCharactor}
                   />
                 </div>
 
                 <div id='pokemon'>
-                  <button
-                    onClick={e => {
-                      this.getPokemon();
-                    }}>
-                    Assign a Pokemon
-                  </button>
-                  <Pokemon pokemon={this.state.pokemon} />
+                  <Pokemon
+                    pokemon={this.state.pokemon}
+                    reload={this.getPokemon}
+                  />
                 </div>
               </div>
             </>
@@ -167,25 +211,116 @@
     </script>
 
     <style>
-      #flex-container {
+      body {
+        background-color: #040d27;
+        font-size: 20px;
+        font-family: 'Roboto', sans-serif;
+        color: #fff;
+        box-sizing: border-box;
+      }
+      h1 {
+        font-family: 'Geostar Fill', cursive;
+        color: goldenrod;
+        text-align: center;
+        font-size: 50px;
+      }
+
+      .reload {
+        font-size: 20px;
+        background-color: #040d27;
+        display: inline-block;
+        padding: 0.35em 1.2em;
+        border: 0.1em solid goldenrod;
+        margin: 0 0.3em 0.3em 0;
+        border-radius: 0.12em;
+        box-sizing: border-box;
+        text-decoration: none;
+        font-weight: 300;
+        color: goldenrod;
+        text-align: center;
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+
+      .reload:hover {
+        color: #040d27;
+        background-color: goldenrod;
+      }
+
+      .reload:focus,
+      .reload:active {
+        border: 0.1em solid goldenrod;
+      }
+
+      @media all and (max-width: 30em) {
+         .reload {
+          display: block;
+          margin: 0.4em auto;
+        }
+      }
+      .flex-container,
+      .starwars_container {
         display: flex;
         flex-direction: row;
         width: 80%;
+        align-items: flex-start;
+        margin: auto;
+      }
+      .flex-container > div {
+        width: 50%;
+        margin: 0 auto;
+      }
+      .name_container {
+        text-align: center;
+      }
+      h2 {
+        margin: 10px;
+      }
+
+      .details_container,
+      .image_container {
+        display: inline-block;
+        width: 50%;
+        text-align: left;
+        vertical-align: top;
+      }
+      .details_container > div {
+        margin-top: 5px;
+      }
+
+      .image_container {
+        text-align: right;
+      }
+
+      .sprites_container {
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
       }
 
       .gender {
-        width: 100px;
-        height: 100px;
-        border-radius: 100%;
-        background-image: url(https://gravatar.com/avatar/b1c60bfdfa49a425b2a67140f9673064?s=100&d=robohash&r=x);
+        width: 150px;
+        height: 150px;
+        margin: auto;
+        background-image: url(https://gravatar.com/avatar/b1c60bfdfa49a425b2a67140f9673064?s=150&d=robohash&r=x);
       }
 
       .male {
-        background-image: url(https://robohash.org/0eeed36917e788e93ea4e92bc35332e4?set=set4&bgset=&size=100x100);
+        background-image: url(https://robohash.org/0eeed36917e788e93ea4e92bc35332e4?set=set4&bgset=&size=150x150);
       }
 
       .female {
-        background-image: url(https://robohash.org/8b21a540f50d4bebef91f445a58163c6?set=set4&bgset=&size=100x100);
+        background-image: url(https://robohash.org/8b21a540f50d4bebef91f445a58163c6?set=set4&bgset=&size=150x150);
+      }
+
+      .ability {
+        padding: 5px;
+        border-radius: 3px;
+        display: inline-block;
+        background-color: white;
+        color: #040d27;
+        margin: 0 5px 5px 0;
+        font-size: 0.8em;
       }
     </style>
   </body>
